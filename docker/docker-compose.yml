@@ -1,0 +1,44 @@
+version: '3.7'
+name: lbi
+services:
+    lbi_server:
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        image: lbi_server
+        container_name: lbi_server
+        ports:
+            - ${SERVER_PORT}:80
+        volumes:
+            - ../:/var/www/html
+        links:
+            - postgres
+        depends_on:
+            - postgres
+            - redis
+        environment:
+            DB_HOST: postgres
+            DB_DATABASE: ${DB_DATABASE}
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
+            SERVER_PORT: ${SERVER_PORT}
+    lbi_postgres:
+        image: postgres:15.3
+        container_name: lbi_postgres
+        ports:
+            - ${DB_PORT}:5432
+        environment:
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_DATABASE}
+            POSTGRES_HOST_AUTH_METHOD: trust
+            PGDATA: /var/lib/postgresql/data/pgdata
+        volumes:
+            - ./data/postgres:/var/lib/postgresql/data
+    lbi_redis:
+        image: redis:6
+        container_name: lbi_redis
+        volumes:
+            - ./data/redis:/data/redis
+        ports:
+            - ${REDIS_PORT}:6379

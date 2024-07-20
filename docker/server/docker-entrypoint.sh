@@ -13,14 +13,14 @@ done
 if [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ]; then
 	echo "Failed to connect to the database:"
 	echo "$DATABASE_ERROR"
-#	exit 1
+	exit 1
 else
 	echo "The database is ready and reachable"
 fi
 
 echo "Waiting for redis to be ready..."
 
-REDIS_MESSAGE=$(redis-cli -h redis ping)
+REDIS_MESSAGE=$(redis-cli -h lbi_redis ping)
 
 if [ "$REDIS_MESSAGE" = "PONG" ]; then
     echo "Successfully connected to redis"

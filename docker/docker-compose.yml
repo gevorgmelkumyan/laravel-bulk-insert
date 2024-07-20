@@ -1,5 +1,8 @@
 version: '3.7'
 name: lbi
+networks:
+    net:
+        driver: bridge
 services:
     lbi_server:
         build:
@@ -12,12 +15,14 @@ services:
         volumes:
             - ../:/var/www/html
         links:
-            - postgres
+            - lbi_postgres
         depends_on:
-            - postgres
-            - redis
+            - lbi_postgres
+            - lbi_redis
+        networks:
+            - net
         environment:
-            DB_HOST: postgres
+            DB_HOST: lbi_postgres
             DB_DATABASE: ${DB_DATABASE}
             DB_USERNAME: ${DB_USERNAME}
             DB_PASSWORD: ${DB_PASSWORD}
@@ -25,6 +30,8 @@ services:
     lbi_postgres:
         image: postgres:15.3
         container_name: lbi_postgres
+        networks:
+            - net
         ports:
             - ${DB_PORT}:5432
         environment:
@@ -38,6 +45,8 @@ services:
     lbi_redis:
         image: redis:6
         container_name: lbi_redis
+        networks:
+            - net
         volumes:
             - ./data/redis:/data/redis
         ports:

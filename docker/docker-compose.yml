@@ -51,3 +51,13 @@ services:
             - ./data/redis:/data/redis
         ports:
             - ${REDIS_PORT}:6379
+    lbi_socket:
+        image: gevorgmelkumyan95/redis-socket-io:latest
+        container_name: lbi_socket
+        ports:
+            - 3000:3000
+        networks:
+            - net
+        environment:
+            - REDIS_HOST=lbi_redis
+            - REDIS_PORT=6379

@@ -25,6 +25,6 @@ class TestEVent implements ShouldBroadcastNow {
     }
 
     public function broadcastAs(): string {
-        return 'message';
+        return 'server:message';
     }
 }
